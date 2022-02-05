@@ -1,0 +1,89 @@
+---
+title: "ANOMALY DETECTION"
+author: "ROTICH HARON"
+date: "2/5/2022"
+output: html_document
+---
+##ANOMALY DETECTIO
+
+# defining question
+#identify anomalies in the dataset
+
+##understanding the context
+#Carrefour Kenya  is one of the leading reatailsalers in the country and would like to know the most relevant strategies to put in place in order to  increase its sales. The marketing departmennt have trouble  in developing  these strategies, but working in partnership with data analyst will help alot in getting important insights from data and make informes strategies.
+#Sucess metrics
+# to identify any anomaly in the  dataset
+---
+
+# Installing  packages
+```{r}
+# intalling packages
+#pkg <- c('tidyverse','tibbletime','anomalize','timetk')
+#install.packages(pkg)
+library(tidyverse)
+library(tibbletime)
+library(anomalize)
+library(timetk)
+
+
+```
+```{r}
+#loading  our data
+path= "C:/Users/hp/Downloads/Supermarket_Sales_Forecasting - Sales.csv"
+df <- read.csv(path)
+```
+
+```{r}
+# preview data
+head(df)
+```
+
+```{r}
+# checking data shape 
+dim(df)
+
+```
+
+
+```{r}
+str(df)
+
+```
+
+```{r}
+# check for missing values
+sum(is.na(df))
+```
+
+```{r}
+# Change Factor to Date format
+df$Date <- paste(df$Date, "01", sep="-")
+# Select only relevant columns in a new dataframe
+df$Date<- as.Date(df$Date,format="%Y-%m-%d")
+```
+
+```{r}
+df <- df %>% select(Date,Sales)
+```
+
+```{r}
+# Convert df to a tibble
+df1 <- as_tibble(df)
+class(df1)
+````
+```{r}
+# anomaly detection
+df_anomalized <-tidyverse_cran_downloads %>%
+    time_decompose(count) %>%
+    anomalize(remainder) %>%
+    time_recompose() %>%
+    plot_anomalies(time_recomposed = TRUE, ncol = 3, alpha_dots = 0.5)
+
+```
+# there are  no anomalies present in our dataset
+
+```{r}
+df_anomalized %>% glimpse()
+```
+
+

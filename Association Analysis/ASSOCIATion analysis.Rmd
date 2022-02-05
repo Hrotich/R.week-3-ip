@@ -1,0 +1,133 @@
+---
+title: "R.week3 ASSOCIATION RULE"
+author: "ROTICH HARON"
+date: "2/5/2022"
+output: html_document
+---
+##ASSOCIATION RULE
+`
+# defining question
+##understanding the context
+#Carrefour Kenya  is one of the leading reatailsalers in the country and would like to know the most relevant strategies to put in place in order to  increase its sales. The marketing departmennt have trouble  in developing  these strategies, but working in partnership with data analyst will help alot in getting important insights from data and make informes strategies.
+#Sucess metrics
+# the sucess of this will be achived by performing Association analysis to determine the rules from our dataset.
+
+```{r}
+#We first we install the required arules library 
+#
+#install.packages("arules")
+
+
+```
+```{r}
+# Loading the arules library
+#
+library(arules)
+```
+
+```{r}
+path <- "C:/Users/hp/Downloads/Supermarket_Sales_Dataset II.csv"
+
+Transactions <-read.transactions(path, sep = ",",rm.duplicates=TRUE)
+Transactions
+
+
+```
+```{r}
+# Verifying the object's class
+# ---
+# This should show us transactions as the type of data that we will need
+# ---
+# 
+class(Transactions)
+
+```
+```{r}
+# Previewing our first 5 transactions
+#
+inspect(Transactions[1:10])
+
+```
+
+```{r}
+
+# If we wanted to preview the items constituents  for our data set
+# ---
+# 
+items<-as.data.frame(itemLabels(Transactions))
+colnames(items) <- "Item"
+head(items,30)    
+```
+```{r}
+ #enerating a summary of the transaction dataset
+# ---
+# 
+summary(Transactions)
+
+```
+```{r}
+#Exploring the frequency of some articles 
+# 
+itemFrequency(Transactions[, 6:9],type = "absolute")
+round(itemFrequency(Transactions[, 6:15],type = "relative")*100,2)
+
+```
+```{r}
+# graphival representation of freuency items
+par(mfrow = c(1, 2))
+
+# plot the frequency of items
+itemFrequencyPlot(Transactions, topN = 5,col="darkgreen")
+itemFrequencyPlot(Transactions, support = 0.1,col="darkred")
+
+```
+
+```{r}
+
+#Building a model based on association rules 
+# using the apriori function : use Min Support as 0.001 and confidence as 0.6
+# ---
+# 
+rules <- apriori (Transactions, parameter = list(supp = 0.001, conf = 0.6))
+rules
+
+```
+
+```{r}
+#Building a model based on association rules 
+# using the apriori function  with adjusted Min Support as 0.003 and confidence as 0.8
+# 
+rules <- apriori (Transactions, parameter = list(supp = 0.002, conf = 0.8))
+rules
+# lower surport gives more rules while higher gives less rules.
+```
+
+
+```{r}
+#Building a model based on association rules  : withadjusted conf of 0.5 will maintainuing the surpport
+rules <- apriori (Transactions, parameter = list(supp = 0.001, conf = 0.5))
+rules
+# the number of rules increases with decrease in  confidence level that is lower confidece produces more rules.
+
+```
+
+```{r}
+
+#If we're interested in making a promotion relating to the sale of eggs, 
+
+# 
+eggs <- subset(rules, subset = rhs %pin% "eggs")
+```
+
+```{r}
+# Then order by confidence
+eggs <-sort(eggs, by="confidence", decreasing=TRUE)
+inspect(eggs[1:6])
+```
+
+
+```{r}
+
+
+
+````
