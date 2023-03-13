@@ -1,4 +1,4 @@
-# R.week-3-ip
+# Association analysis-ip
 week3
 
 #project name :
